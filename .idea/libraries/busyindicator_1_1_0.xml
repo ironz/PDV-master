@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="busyindicator-1.1.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.silverforge.controls/busyindicator/1.1.0/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.silverforge.controls/busyindicator/1.1.0/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.silverforge.controls/busyindicator/1.1.0/e6b90b9d45c6cff0729e310a38c5500e8686e5ed/busyindicator-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
