@@ -119,13 +119,13 @@
         android:layout_alignTop="@+id/imageButton"
         android:layout_alignEnd="@+id/editText4" />
 
-    <TextView
+    <Button
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="btnCodigo"
-        android:id="@+id/textView7"
+        android:text="Codigo"
+        android:id="@+id/btnCodigo"
         android:layout_below="@+id/editText2"
-        android:layout_centerHorizontal="true" />
+        android:layout_toEndOf="@+id/imageButton" />
 
 </RelativeLayout>

@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,12 +26,20 @@ import java.io.IOException;
 import br.com.trainning.pdv.R;
 import br.com.trainning.pdv.domain.image.Base64Util;
 import br.com.trainning.pdv.domain.image.ImageInputHelper;
+import br.com.trainning.pdv.domain.model.Item;
 import br.com.trainning.pdv.domain.model.Produto;
 import br.com.trainning.pdv.domain.network.APIClient;
 import butterknife.Bind;
+import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+import jim.h.common.android.lib.zxing.config.ZXingLibConfig;
+import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
+import jim.h.common.android.lib.zxing.integrator.IntentResult;
+import se.emilsjolander.sprinkles.Query;
+
 
 public class IncluirNovo extends BaseActivity implements ImageInputHelper.ImageActionListener{
 
@@ -48,9 +57,19 @@ public class IncluirNovo extends BaseActivity implements ImageInputHelper.ImageA
     ImageButton tiraFoto;
     @Bind(R.id.imageButton2)
     ImageButton selecionaGaleria;
+    @Bind(R.id.btnCodigo)
+    Button codigo;
+
     @Bind(R.id.fab)
     FloatingActionButton fab;
+
+
+
+
     Produto produto;
+
+    private ZXingLibConfig zxingLibConfig;
+
 
     private ImageInputHelper imageInputHelper;
 
@@ -87,7 +106,7 @@ public class IncluirNovo extends BaseActivity implements ImageInputHelper.ImageA
                 produto.setCodigoBarras(codigoBarras.getText().toString());
                 produto.setPreco(Double.parseDouble(preco.getText().toString()));
 
-                Bitmap imagem = ((BitmapDrawable)foto.getDrawable()).getBitmap();
+                Bitmap imagem = ((BitmapDrawable) foto.getDrawable()).getBitmap();
 
                 produto.setFoto(Base64Util.encodeTobase64(imagem));
                 produto.setAtivo(0);
@@ -103,7 +122,7 @@ public class IncluirNovo extends BaseActivity implements ImageInputHelper.ImageA
 
                 produto.save();
 
-                new APIClient().getRestService().createProduto(produto.getCodigoBarras(), produto.getDescricao(), produto.getUnidade(), produto.getPreco(), produto.getFoto(), produto.getAtivo(),produto.getLatitude(),produto.getLongitude(),
+                new APIClient().getRestService().createProduto(produto.getCodigoBarras(), produto.getDescricao(), produto.getUnidade(), produto.getPreco(), produto.getFoto(), produto.getAtivo(), produto.getLatitude(), produto.getLongitude(),
                         callbackCreateProduto);
                 finish();
             }
@@ -123,7 +142,14 @@ public class IncluirNovo extends BaseActivity implements ImageInputHelper.ImageA
             }
         });
 
-        btnCodigo.
+        codigo.setOnClickListener(new View.OnClickListener() {
+                                      @Override
+                                      public void onClick(View view) {
+
+                                          IntentIntegrator.initiateScan(IncluirNovo.this, zxingLibConfig);
+
+                                      }
+        });
 
         imageInputHelper = new ImageInputHelper(this);
         imageInputHelper.setImageActionListener(this);
@@ -135,6 +161,25 @@ public class IncluirNovo extends BaseActivity implements ImageInputHelper.ImageA
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imageInputHelper.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case IntentIntegrator.REQUEST_CODE:
+                IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode,
+                        resultCode, data);
+                if (scanResult == null) {
+                    return;
+                }
+                String result = scanResult.getContents();
+                if (result != null) {
+                    codigoBarras.setText(String.valueOf(result));
+
+//                }else{
+//                        Snackbar.make(coordinatorLayout, "Produto não cadastrado!", Snackbar.LENGTH_LONG);
+//                    }
+
+                }
+                break;
+        }
     }
 
     @Override

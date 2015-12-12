@@ -66,6 +66,15 @@
         android:layout_below="@+id/editText2"
         android:layout_alignParentStart="true" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Codigo"
+        android:id="@+id/btnCodigo"
+        android:layout_below="@+id/editText2"
+        android:layout_toEndOf="@+id/imageButton" />
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

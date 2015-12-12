@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -33,6 +34,9 @@ import br.com.trainning.pdv.domain.image.ImageInputHelper;
 import br.com.trainning.pdv.domain.model.Produto;
 import br.com.trainning.pdv.domain.network.APIClient;
 import butterknife.Bind;
+import jim.h.common.android.lib.zxing.config.ZXingLibConfig;
+import jim.h.common.android.lib.zxing.integrator.IntentIntegrator;
+import jim.h.common.android.lib.zxing.integrator.IntentResult;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -60,7 +64,13 @@ public class Editar extends BaseActivity implements ImageInputHelper.ImageAction
     FloatingActionButton fab;
     @Bind(R.id.spinner1)
     Spinner spinner1;
+    @Bind(R.id.btnCodigo)
+    Button codigo;
+
     Produto produto;
+
+    private ZXingLibConfig zxingLibConfig;
+
 
     private ImageInputHelper imageInputHelper;
 
@@ -142,7 +152,7 @@ public class Editar extends BaseActivity implements ImageInputHelper.ImageAction
                     produto.setLongitude(location.getLongitude());
                 }
                 produto.save();
-                new APIClient().getRestService().updateProduto(produto.getCodigoBarras(), produto.getDescricao(), produto.getUnidade(), produto.getPreco(), produto.getFoto(), produto.getAtivo(),produto.getLatitude(),produto.getLongitude(), callbackUpdateProduto);
+                new APIClient().getRestService().updateProduto(produto.getCodigoBarras(), produto.getDescricao(), produto.getUnidade(), produto.getPreco(), produto.getFoto(), produto.getAtivo(), produto.getLatitude(), produto.getLongitude(), callbackUpdateProduto);
                 finish();
             }
         });
@@ -161,6 +171,15 @@ public class Editar extends BaseActivity implements ImageInputHelper.ImageAction
             }
         });
 
+        codigo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                IntentIntegrator.initiateScan(Editar.this, zxingLibConfig);
+
+            }
+        });
+
         imageInputHelper = new ImageInputHelper(this);
         imageInputHelper.setImageActionListener(this);
     }
@@ -169,6 +188,29 @@ public class Editar extends BaseActivity implements ImageInputHelper.ImageAction
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imageInputHelper.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+        imageInputHelper.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case IntentIntegrator.REQUEST_CODE:
+                IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode,
+                        resultCode, data);
+                if (scanResult == null) {
+                    return;
+                }
+                String result = scanResult.getContents();
+                if (result != null) {
+                    codigoBarras.setText(String.valueOf(result));
+
+//                }else{
+//                        Snackbar.make(coordinatorLayout, "Produto não cadastrado!", Snackbar.LENGTH_LONG);
+//                    }
+
+                }
+                break;
+        }
+
+
     }
 
     @Override
